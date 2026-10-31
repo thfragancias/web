@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+
+  <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -31,6 +33,28 @@ main{max-width:1000px;margin:0 auto;padding:16px 20px 64px}
 .info .btn{margin-top:14px}
 .cat{font-family:Cinzel,"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:1.1rem;letter-spacing:.22em;text-transform:uppercase;margin:40px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .soon{color:var(--mute);font-size:.85rem;margin:0}
+button.btn{border:0;cursor:pointer;font-family:inherit;width:100%}
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:20}
+.fab svg{width:24px;height:24px}
+.fab span{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#b4543a;color:#fff;font-size:.72rem;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.shade{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);background:var(--card);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .25s;z-index:40;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(18px + env(safe-area-inset-bottom,0px))}
+body.open .shade{opacity:1;pointer-events:auto}
+body.open .drawer{transform:none}
+.dh{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line);font-family:Cinzel,"Cormorant Garamond",Georgia,serif;letter-spacing:.2em;text-transform:uppercase;font-size:1rem}
+.dh button{background:none;border:0;color:var(--ink);font-size:1.6rem;cursor:pointer;line-height:1}
+#cart-list{flex:1;overflow-y:auto;padding:8px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:28px;height:28px;border:1px solid var(--line);background:none;color:var(--ink);cursor:pointer;font-size:1rem;line-height:1}
+.tot{display:flex;justify-content:space-between;font-size:1.1rem;margin-bottom:14px}
+.off{opacity:.4;pointer-events:none}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:28px}
+.box{background:var(--card);border:1px solid var(--line);padding:26px 20px;text-align:center}
+.box svg{width:30px;height:30px;stroke:var(--ink);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;margin-bottom:12px}
+.box h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:1.4rem;margin:0 0 6px}
+.box p{margin:0;color:var(--mute);font-size:.9rem}
+.cta{max-width:340px;margin:0 auto}
 .social{display:flex;justify-content:center;gap:24px;margin:0}.social a{display:inline-flex;color:var(--ink)}.social svg{width:26px;height:26px}
 footer{text-align:center;color:var(--mute);font-size:.78rem;padding:32px 20px 48px;border-top:1px solid var(--line)}
 footer a{color:var(--ink)}
@@ -48,11 +72,44 @@ footer a{color:var(--ink)}
   <h2 class="cat">Extractos 60ml</h2>
   <div class="grid" id="grid-extractos"></div>
   <p class="soon" id="soon">Próximamente.</p>
+<section id="envios">
+    <h2 class="cat">Envíos y medios de pago</h2>
+    <div class="cols">
+      <div class="box">
+        <svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <h3>Entrega personal</h3>
+        <p>Entregas personales en Chacabuco, Buenos Aires.</p>
+      </div>
+      <div class="box">
+        <svg viewBox="0 0 24 24"><path d="M3 6h11v10H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+        <h3>Otras localidades</h3>
+        <p>Por el momento no hacemos envíos a otras localidades.</p>
+      </div>
+      <div class="box">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>
+        <h3>Medios de pago</h3>
+        <p>Consultanos por WhatsApp los medios de pago disponibles.</p>
+      </div>
+    </div>
+    <a id="wa2" class="btn cta" href="#" target="_blank" rel="noopener">Consultar envíos y pagos</a>
+  </section>
 </main>
 <footer>
   <p>Consultá disponibilidad y envíos por WhatsApp.</p>
   <p class="social"><a id="wa" href="#" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><g transform="translate(7 7) scale(.42)" stroke-width="3"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g></svg></a><a href="https://www.instagram.com/thfragancias" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".7" fill="currentColor"/></svg></a><a href="https://www.tiktok.com/@thfragancias" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a></p>
 </footer>
+<button class="fab" id="cart-fab" type="button" aria-label="Abrir carrito"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span id="cart-count">0</span></button>
+<div class="shade" id="shade"></div>
+<aside class="drawer" id="cart" aria-label="Carrito">
+  <div class="dh"><span>Tu pedido</span><button type="button" id="cart-close" aria-label="Cerrar">×</button></div>
+  <div id="cart-list"></div>
+  <p class="meta" id="cart-empty">Tu carrito está vacío.</p>
+  <div class="df">
+    <div class="tot"><span>Total</span><strong id="cart-total">$0</strong></div>
+    <a id="send" class="btn off" target="_blank" rel="noopener" href="#">Enviar pedido por WhatsApp</a>
+    <p class="meta" style="text-align:center;margin:10px 0 0">Se abre WhatsApp con tu pedido listo para enviar.</p>
+  </div>
+</aside>
 <script>
 var WA = "542352419348";
 var products = [
@@ -69,12 +126,48 @@ products.forEach(function(p){
   var n=document.createElement("div");n.className="name";n.textContent=p.name;
   var m=document.createElement("div");m.className="meta";m.textContent=p.meta;
   var pr=document.createElement("div");pr.className="price";pr.textContent="$"+p.price.toLocaleString("es-AR");
-  var b=document.createElement("a");b.className="btn";b.target="_blank";b.rel="noopener";
-  b.href=link("Hola, me interesa el "+p.name+".");b.textContent="Consultar";
+  var b=document.createElement("button");b.className="btn";b.type="button";
+  b.textContent="Agregar al carrito";b.onclick=function(){add(p);b.textContent="Agregado ✓";setTimeout(function(){b.textContent="Agregar al carrito";},1200);};
   info.append(n,m,pr,b);c.append(ph,info);document.getElementById(p.cat==="extractos"?"grid-extractos":"grid").appendChild(c);
 });
 if(document.getElementById("grid-extractos").children.length){document.getElementById("soon").hidden=true;}
+var cart={};
+try{var sv=localStorage.getItem("th-cart");if(sv){cart=JSON.parse(sv)||{};}}catch(e){}
+function save(){try{localStorage.setItem("th-cart",JSON.stringify(cart));}catch(e){}}
+function money(n){return "$"+n.toLocaleString("es-AR");}
+function items(){return products.filter(function(p){return cart[p.name];});}
+function add(p){cart[p.name]=(cart[p.name]||0)+1;save();render();}
+function chg(name,d){cart[name]=(cart[name]||0)+d;if(cart[name]<=0){delete cart[name];}save();render();}
+function openC(o){document.body.classList.toggle("open",o);}
+function render(){
+  var list=document.getElementById("cart-list");list.textContent="";
+  var total=0,count=0,msg="Hola, quiero hacer este pedido:\n\n";
+  items().forEach(function(p){
+    var q=cart[p.name];total+=p.price*q;count+=q;
+    msg+="- "+q+" x "+p.name+" ("+money(p.price*q)+")\n";
+    var row=document.createElement("div");row.className="row";
+    var t=document.createElement("div");
+    var a=document.createElement("div");a.textContent=p.name;
+    var b=document.createElement("div");b.className="meta";b.textContent=money(p.price);
+    t.append(a,b);
+    var ctl=document.createElement("div");ctl.className="qty";
+    var mi=document.createElement("button");mi.type="button";mi.textContent="\u2212";mi.setAttribute("aria-label","Quitar uno");mi.onclick=function(){chg(p.name,-1);};
+    var n=document.createElement("span");n.textContent=q;
+    var pl=document.createElement("button");pl.type="button";pl.textContent="+";pl.setAttribute("aria-label","Agregar uno");pl.onclick=function(){chg(p.name,1);};
+    ctl.append(mi,n,pl);row.append(t,ctl);list.appendChild(row);
+  });
+  msg+="\nTotal: "+money(total);
+  document.getElementById("cart-count").textContent=count;
+  document.getElementById("cart-total").textContent=money(total);
+  document.getElementById("cart-empty").hidden=count>0;
+  var s=document.getElementById("send");s.href=count?link(msg):"#";s.classList.toggle("off",!count);
+}
+document.getElementById("cart-fab").onclick=function(){openC(true);};
+document.getElementById("cart-close").onclick=function(){openC(false);};
+document.getElementById("shade").onclick=function(){openC(false);};
+render();
 document.getElementById("wa").href=link("Hola, quiero consultar por un perfume.");
+document.getElementById("wa2").href=link("Hola, quiero consultar por las opciones de envío y los medios de pago.");
 </script>
 </body>
 </html>
