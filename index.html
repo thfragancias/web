@@ -424,19 +424,27 @@ body.detail-open{overflow:hidden}
 }
 
 
-/* Buscador y filtros del catálogo */
+/* Buscador compacto y filtros desplegables */
 .catalog-tools{
-  margin:4px 0 34px;
-  padding:22px;
-  border:1px solid var(--line);
-  background:var(--card);
-  box-shadow:0 6px 22px rgba(28,26,23,.035);
+  position:relative;
+  z-index:12;
+  margin:4px 0 30px;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
 }
+.catalog-toolbar{
+  display:flex;
+  align-items:flex-end;
+  gap:10px;
+}
+.catalog-search{flex:1;min-width:0}
 .catalog-search label,.catalog-filter label{
   display:block;
-  margin:0 0 7px;
+  margin:0 0 6px;
   color:var(--mute);
-  font-size:.7rem;
+  font-size:.66rem;
   font-weight:500;
   letter-spacing:.12em;
   text-transform:uppercase;
@@ -446,45 +454,102 @@ body.detail-open{overflow:hidden}
   width:100%;
   min-width:0;
   min-height:44px;
-  padding:10px 12px;
+  padding:9px 12px;
   border:1px solid var(--line);
   border-radius:2px;
-  background:var(--bg);
+  background:var(--card);
   color:var(--ink);
-  font:400 .9rem Jost,system-ui,sans-serif;
+  font:400 .88rem Jost,system-ui,sans-serif;
 }
 .catalog-search input:focus,.catalog-filter input:focus,.catalog-filter select:focus{
   border-color:var(--th-gold);
   outline:1px solid var(--th-gold-soft);
 }
+.catalog-advanced{
+  position:relative;
+  flex:0 0 auto;
+}
+.catalog-advanced summary{
+  display:flex;
+  min-height:44px;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 15px;
+  border:1px solid var(--line);
+  border-radius:2px;
+  background:var(--card);
+  color:var(--ink);
+  cursor:pointer;
+  list-style:none;
+  font-size:.76rem;
+  font-weight:400;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  transition:border-color .2s ease,background .2s ease;
+}
+.catalog-advanced summary::-webkit-details-marker{display:none}
+.catalog-advanced summary:hover,.catalog-advanced[open] summary{
+  border-color:var(--th-gold);
+  background:var(--bg);
+}
+.filter-summary-icon{
+  color:var(--th-gold);
+  font-size:1.1rem;
+  line-height:1;
+}
+.active-filter-count{
+  display:inline-flex;
+  min-width:18px;
+  height:18px;
+  align-items:center;
+  justify-content:center;
+  padding:0 5px;
+  border-radius:20px;
+  background:var(--th-gold);
+  color:#fff;
+  font-size:.65rem;
+  letter-spacing:0;
+}
+.active-filter-count[hidden]{display:none}
+.catalog-filter-popover{
+  position:absolute;
+  top:calc(100% + 9px);
+  right:0;
+  width:min(560px,calc(100vw - 40px));
+  padding:18px;
+  border:1px solid var(--line);
+  background:var(--card);
+  box-shadow:0 16px 38px rgba(28,26,23,.14);
+  z-index:20;
+}
 .catalog-filter-grid{
   display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:14px;
-  margin-top:16px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
 }
 .catalog-filter-footer{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:14px;
-  margin-top:16px;
-  padding-top:14px;
+  margin-top:14px;
+  padding-top:12px;
   border-top:1px solid var(--line);
 }
 .catalog-filter-footer p{
   margin:0;
   color:var(--mute);
-  font-size:.8rem;
+  font-size:.78rem;
 }
 #clear-filters{
   flex:0 0 auto;
-  padding:7px 0;
+  padding:6px 0;
   border:0;
   background:none;
   color:var(--ink);
-  font:400 .76rem Jost,system-ui,sans-serif;
-  letter-spacing:.08em;
+  font:400 .73rem Jost,system-ui,sans-serif;
+  letter-spacing:.07em;
   text-transform:uppercase;
   text-decoration:underline;
   text-decoration-color:var(--th-gold);
@@ -500,11 +565,18 @@ body.detail-open{overflow:hidden}
   text-align:center;
   font-size:.9rem;
 }
-@media(max-width:760px){
-  .catalog-tools{padding:18px 14px;margin-bottom:28px}
-  .catalog-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:640px){
+  .catalog-tools{margin-bottom:24px}
+  .catalog-toolbar{gap:8px}
+  .catalog-search label{font-size:.61rem}
+  .catalog-search input{min-height:42px;padding:8px 10px;font-size:.82rem}
+  .catalog-advanced summary{min-height:42px;padding:0 11px;gap:6px;font-size:.7rem}
+  .catalog-filter-popover{width:min(460px,calc(100vw - 28px));padding:14px}
+  .catalog-filter-grid{gap:10px}
+  .catalog-filter input,.catalog-filter select{min-height:42px;padding:8px;font-size:.82rem}
 }
-@media(max-width:380px){
+@media(max-width:360px){
+  .catalog-filter-popover{position:fixed;top:auto;left:14px;right:14px;width:auto;margin-top:8px}
   .catalog-filter-footer{align-items:flex-start;flex-direction:column}
   #clear-filters{align-self:flex-start}
 }
@@ -519,43 +591,54 @@ body.detail-open{overflow:hidden}
 </header>
 <main>
   <section class="catalog-tools" aria-label="Buscador y filtros de perfumes">
+  <div class="catalog-toolbar">
     <div class="catalog-search">
       <label for="product-search">Buscar perfume</label>
-      <input id="product-search" type="search" placeholder="Ej. 9PM, Mandarin Sky..." autocomplete="off">
+      <input id="product-search" type="search" placeholder="Buscar por nombre o notas..." autocomplete="off">
     </div>
-    <div class="catalog-filter-grid">
-      <div class="catalog-filter">
-        <label for="filter-gender">Género</label>
-        <select id="filter-gender">
-          <option value="all">Todos</option>
-          <option value="Masculino">Masculino</option>
-          <option value="Femenino">Femenino</option>
-          <option value="Unisex">Unisex</option>
-        </select>
+    <details class="catalog-advanced" id="catalog-advanced">
+      <summary>
+        <span class="filter-summary-icon" aria-hidden="true">☷</span>
+        <span>Filtros</span>
+        <span class="active-filter-count" id="active-filter-count" hidden>0</span>
+      </summary>
+      <div class="catalog-filter-popover">
+        <div class="catalog-filter-grid">
+          <div class="catalog-filter">
+            <label for="filter-gender">Género</label>
+            <select id="filter-gender">
+              <option value="all">Todos</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+          </div>
+          <div class="catalog-filter">
+            <label for="filter-aroma">Tipo de aroma</label>
+            <select id="filter-aroma">
+              <option value="all">Todos los aromas</option>
+              <option value="Fresco">Frescos</option>
+              <option value="Dulce">Dulces</option>
+              <option value="Intenso">Intensos</option>
+            </select>
+          </div>
+          <div class="catalog-filter">
+            <label for="filter-min-price">Precio mínimo</label>
+            <input id="filter-min-price" type="number" min="0" step="1000" inputmode="numeric" placeholder="Sin mínimo">
+          </div>
+          <div class="catalog-filter">
+            <label for="filter-max-price">Precio máximo</label>
+            <input id="filter-max-price" type="number" min="0" step="1000" inputmode="numeric" placeholder="Sin máximo">
+          </div>
+        </div>
+        <div class="catalog-filter-footer">
+          <p id="filter-count" aria-live="polite">Mostrando todos los perfumes</p>
+          <button id="clear-filters" type="button">Limpiar filtros</button>
+        </div>
       </div>
-      <div class="catalog-filter">
-        <label for="filter-aroma">Tipo de aroma</label>
-        <select id="filter-aroma">
-          <option value="all">Todos los aromas</option>
-          <option value="Fresco">Frescos</option>
-          <option value="Dulce">Dulces</option>
-          <option value="Intenso">Intensos</option>
-        </select>
-      </div>
-      <div class="catalog-filter">
-        <label for="filter-min-price">Precio mínimo</label>
-        <input id="filter-min-price" type="number" min="0" step="1000" inputmode="numeric" placeholder="Sin mínimo">
-      </div>
-      <div class="catalog-filter">
-        <label for="filter-max-price">Precio máximo</label>
-        <input id="filter-max-price" type="number" min="0" step="1000" inputmode="numeric" placeholder="Sin máximo">
-      </div>
-    </div>
-    <div class="catalog-filter-footer">
-      <p id="filter-count" aria-live="polite">Mostrando todos los perfumes</p>
-      <button id="clear-filters" type="button">Limpiar filtros</button>
-    </div>
-  </section>
+    </details>
+  </div>
+</section>
   <p class="catalog-empty" id="catalog-empty" hidden>No encontramos perfumes con esos filtros. Probá cambiando la búsqueda.</p>
   <h2 class="cat" id="heading-100">Perfumes 100ml</h2>
   <div class="grid" id="grid"></div>
@@ -763,7 +846,11 @@ function renderProducts(list){
   });
   heading100.hidden=count100===0;
   headingExtractos.hidden=countExtractos===0;
-  var hasActive=!!(activeFilters.search || activeFilters.gender!=="all" || activeFilters.aroma!=="all" || activeFilters.minPrice!=="" || activeFilters.maxPrice!=="");
+  var activeFilterTotal=(activeFilters.gender!=="all"?1:0)+(activeFilters.aroma!=="all"?1:0)+(activeFilters.minPrice!==""?1:0)+(activeFilters.maxPrice!==""?1:0);
+  var activeFilterBadge=document.getElementById("active-filter-count");
+  activeFilterBadge.textContent=activeFilterTotal;
+  activeFilterBadge.hidden=activeFilterTotal===0;
+  var hasActive=!!(activeFilters.search || activeFilterTotal>0);
   soonMessage.hidden=hasActive || countExtractos>0;
   catalogEmpty.hidden=list.length>0;
   filterCount.textContent="Mostrando "+list.length+" "+(list.length===1?"perfume":"perfumes");
