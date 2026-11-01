@@ -275,6 +275,33 @@ body.open{
 }
 
 
+
+/* Apertura directa de fichas desde la foto o el nombre */
+button.ph.product-photo-trigger{
+  appearance:none;
+  width:100%;
+  border:0;
+  cursor:pointer;
+}
+button.ph.product-photo-trigger:focus-visible,
+button.product-name-trigger:focus-visible{
+  outline:2px solid var(--th-gold);
+  outline-offset:-3px;
+}
+button.product-name-trigger{
+  display:block;
+  width:100%;
+  padding:0;
+  border:0;
+  background:none;
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+button.product-name-trigger:hover{
+  color:var(--th-gold);
+}
+
 /* Fichas de detalle de producto */
 .details-btn{
   align-self:flex-start;
@@ -831,16 +858,15 @@ function renderProducts(list){
   var countExtractos=0;
   list.forEach(function(p){
     var c=document.createElement("article");c.className="card";
-    var ph=document.createElement("div");ph.className="ph";
-    if(p.img){var i=document.createElement("img");i.src=p.img;i.alt=p.name;ph.appendChild(i);}else{ph.textContent="Foto";}
+    var ph=document.createElement("button");ph.type="button";ph.className="ph product-photo-trigger";ph.setAttribute("aria-label","Ver detalles de "+p.name);ph.onclick=function(){openProductDetails(p,ph);};
+    if(p.img){var i=document.createElement("img");i.src=p.img;i.alt="";ph.appendChild(i);}else{ph.textContent="Foto";}
     var info=document.createElement("div");info.className="info";
-    var n=document.createElement("div");n.className="name";n.textContent=p.name;
+    var n=document.createElement("button");n.type="button";n.className="name product-name-trigger";n.textContent=p.name;n.setAttribute("aria-label","Ver detalles de "+p.name);n.onclick=function(){openProductDetails(p,n);};
     var m=document.createElement("div");m.className="meta";m.textContent=p.meta;
     var pr=document.createElement("div");pr.className="price";pr.textContent="$"+p.price.toLocaleString("es-AR");
-    var details=document.createElement("button");details.className="details-btn";details.type="button";details.textContent="Ver detalles";details.onclick=function(){openProductDetails(p,details);};
     var b=document.createElement("button");b.className="btn";b.type="button";
     b.textContent="Agregar al carrito";b.onclick=function(){add(p);b.textContent="Agregado ✓";setTimeout(function(){b.textContent="Agregar al carrito";},1200);};
-    info.append(n,m,details,pr,b);c.append(ph,info);
+    info.append(n,m,pr,b);c.append(ph,info);
     if(p.cat==="extractos"){extractGrid.appendChild(c);countExtractos++;}
     else{grid.appendChild(c);count100++;}
   });
