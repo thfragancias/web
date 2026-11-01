@@ -423,6 +423,92 @@ body.detail-open{overflow:hidden}
   .product-modal *{transition:none!important}
 }
 
+
+/* Buscador y filtros del catálogo */
+.catalog-tools{
+  margin:4px 0 34px;
+  padding:22px;
+  border:1px solid var(--line);
+  background:var(--card);
+  box-shadow:0 6px 22px rgba(28,26,23,.035);
+}
+.catalog-search label,.catalog-filter label{
+  display:block;
+  margin:0 0 7px;
+  color:var(--mute);
+  font-size:.7rem;
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.catalog-search input,.catalog-filter input,.catalog-filter select{
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:44px;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:2px;
+  background:var(--bg);
+  color:var(--ink);
+  font:400 .9rem Jost,system-ui,sans-serif;
+}
+.catalog-search input:focus,.catalog-filter input:focus,.catalog-filter select:focus{
+  border-color:var(--th-gold);
+  outline:1px solid var(--th-gold-soft);
+}
+.catalog-filter-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-top:16px;
+}
+.catalog-filter-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+}
+.catalog-filter-footer p{
+  margin:0;
+  color:var(--mute);
+  font-size:.8rem;
+}
+#clear-filters{
+  flex:0 0 auto;
+  padding:7px 0;
+  border:0;
+  background:none;
+  color:var(--ink);
+  font:400 .76rem Jost,system-ui,sans-serif;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  text-decoration:underline;
+  text-decoration-color:var(--th-gold);
+  text-underline-offset:4px;
+  cursor:pointer;
+}
+#clear-filters:hover{color:var(--th-gold)}
+.catalog-empty{
+  margin:0 0 26px;
+  padding:24px;
+  border:1px solid var(--line);
+  color:var(--mute);
+  text-align:center;
+  font-size:.9rem;
+}
+@media(max-width:760px){
+  .catalog-tools{padding:18px 14px;margin-bottom:28px}
+  .catalog-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+}
+@media(max-width:380px){
+  .catalog-filter-footer{align-items:flex-start;flex-direction:column}
+  #clear-filters{align-self:flex-start}
+}
+
 </style>
 </head>
 <body>
@@ -432,9 +518,48 @@ body.detail-open{overflow:hidden}
   <div class="rule"></div>
 </header>
 <main>
-  <h2 class="cat">Perfumes 100ml</h2>
+  <section class="catalog-tools" aria-label="Buscador y filtros de perfumes">
+    <div class="catalog-search">
+      <label for="product-search">Buscar perfume</label>
+      <input id="product-search" type="search" placeholder="Ej. 9PM, Mandarin Sky..." autocomplete="off">
+    </div>
+    <div class="catalog-filter-grid">
+      <div class="catalog-filter">
+        <label for="filter-gender">Género</label>
+        <select id="filter-gender">
+          <option value="all">Todos</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Unisex">Unisex</option>
+        </select>
+      </div>
+      <div class="catalog-filter">
+        <label for="filter-aroma">Tipo de aroma</label>
+        <select id="filter-aroma">
+          <option value="all">Todos los aromas</option>
+          <option value="Fresco">Frescos</option>
+          <option value="Dulce">Dulces</option>
+          <option value="Intenso">Intensos</option>
+        </select>
+      </div>
+      <div class="catalog-filter">
+        <label for="filter-min-price">Precio mínimo</label>
+        <input id="filter-min-price" type="number" min="0" step="1000" inputmode="numeric" placeholder="Sin mínimo">
+      </div>
+      <div class="catalog-filter">
+        <label for="filter-max-price">Precio máximo</label>
+        <input id="filter-max-price" type="number" min="0" step="1000" inputmode="numeric" placeholder="Sin máximo">
+      </div>
+    </div>
+    <div class="catalog-filter-footer">
+      <p id="filter-count" aria-live="polite">Mostrando todos los perfumes</p>
+      <button id="clear-filters" type="button">Limpiar filtros</button>
+    </div>
+  </section>
+  <p class="catalog-empty" id="catalog-empty" hidden>No encontramos perfumes con esos filtros. Probá cambiando la búsqueda.</p>
+  <h2 class="cat" id="heading-100">Perfumes 100ml</h2>
   <div class="grid" id="grid"></div>
-  <h2 class="cat">Extractos 60ml</h2>
+  <h2 class="cat" id="heading-extractos">Extractos 60ml</h2>
   <div class="grid" id="grid-extractos"></div>
   <p class="soon" id="soon">Próximamente.</p>
 <section id="envios">
@@ -591,19 +716,92 @@ document.addEventListener("keydown",function(e){
 
 function link(msg){return "https://wa.me/"+WA+"?text="+encodeURIComponent(msg);}
 var grid=document.getElementById("grid");
-products.forEach(function(p){
-  var c=document.createElement("article");c.className="card";
-  var ph=document.createElement("div");ph.className="ph";
-  if(p.img){var i=document.createElement("img");i.src=p.img;i.alt=p.name;ph.appendChild(i);}else{ph.textContent="Foto";}
-  var info=document.createElement("div");info.className="info";
-  var n=document.createElement("div");n.className="name";n.textContent=p.name;
-  var m=document.createElement("div");m.className="meta";m.textContent=p.meta;
-  var pr=document.createElement("div");pr.className="price";pr.textContent="$"+p.price.toLocaleString("es-AR");
-  var details=document.createElement("button");details.className="details-btn";details.type="button";details.textContent="Ver detalles";details.onclick=function(){openProductDetails(p,details);};
-  var b=document.createElement("button");b.className="btn";b.type="button";
-  b.textContent="Agregar al carrito";b.onclick=function(){add(p);b.textContent="Agregado ✓";setTimeout(function(){b.textContent="Agregar al carrito";},1200);};
-  info.append(n,m,details,pr,b);c.append(ph,info);document.getElementById(p.cat==="extractos"?"grid-extractos":"grid").appendChild(c);
+var grid=document.getElementById("grid");
+var extractGrid=document.getElementById("grid-extractos");
+var heading100=document.getElementById("heading-100");
+var headingExtractos=document.getElementById("heading-extractos");
+var soonMessage=document.getElementById("soon");
+var filterCount=document.getElementById("filter-count");
+var catalogEmpty=document.getElementById("catalog-empty");
+
+var productFilters = {
+  "Perfume G5 9pm Afnan": {gender:"Masculino", aromas:["Dulce","Intenso"]},
+  "Perfume G5 Odyssey Mandarin Sky": {gender:"Unisex", aromas:["Fresco","Dulce"]}
+};
+
+var activeFilters={search:"",gender:"all",aroma:"all",minPrice:"",maxPrice:""};
+function matchesProduct(p){
+  var f=productFilters[p.name]||{};
+  var detail=productDetails[p.name]||{};
+  var searchable=[p.name,p.meta,detail.description,detail.top,detail.heart,detail.base].join(" ").toLocaleLowerCase("es");
+  if(activeFilters.search && searchable.indexOf(activeFilters.search.toLocaleLowerCase("es"))===-1){return false;}
+  if(activeFilters.gender!=="all" && f.gender!==activeFilters.gender){return false;}
+  if(activeFilters.aroma!=="all" && (!f.aromas || f.aromas.indexOf(activeFilters.aroma)===-1)){return false;}
+  if(activeFilters.minPrice!=="" && p.price<Number(activeFilters.minPrice)){return false;}
+  if(activeFilters.maxPrice!=="" && p.price>Number(activeFilters.maxPrice)){return false;}
+  return true;
+}
+function renderProducts(list){
+  grid.textContent="";
+  extractGrid.textContent="";
+  var count100=0;
+  var countExtractos=0;
+  list.forEach(function(p){
+    var c=document.createElement("article");c.className="card";
+    var ph=document.createElement("div");ph.className="ph";
+    if(p.img){var i=document.createElement("img");i.src=p.img;i.alt=p.name;ph.appendChild(i);}else{ph.textContent="Foto";}
+    var info=document.createElement("div");info.className="info";
+    var n=document.createElement("div");n.className="name";n.textContent=p.name;
+    var m=document.createElement("div");m.className="meta";m.textContent=p.meta;
+    var pr=document.createElement("div");pr.className="price";pr.textContent="$"+p.price.toLocaleString("es-AR");
+    var details=document.createElement("button");details.className="details-btn";details.type="button";details.textContent="Ver detalles";details.onclick=function(){openProductDetails(p,details);};
+    var b=document.createElement("button");b.className="btn";b.type="button";
+    b.textContent="Agregar al carrito";b.onclick=function(){add(p);b.textContent="Agregado ✓";setTimeout(function(){b.textContent="Agregar al carrito";},1200);};
+    info.append(n,m,details,pr,b);c.append(ph,info);
+    if(p.cat==="extractos"){extractGrid.appendChild(c);countExtractos++;}
+    else{grid.appendChild(c);count100++;}
+  });
+  heading100.hidden=count100===0;
+  headingExtractos.hidden=countExtractos===0;
+  var hasActive=!!(activeFilters.search || activeFilters.gender!=="all" || activeFilters.aroma!=="all" || activeFilters.minPrice!=="" || activeFilters.maxPrice!=="");
+  soonMessage.hidden=hasActive || countExtractos>0;
+  catalogEmpty.hidden=list.length>0;
+  filterCount.textContent="Mostrando "+list.length+" "+(list.length===1?"perfume":"perfumes");
+}
+function applyProductFilters(){
+  renderProducts(products.filter(matchesProduct));
+}
+function clearProductFilters(){
+  document.getElementById("product-search").value="";
+  document.getElementById("filter-gender").value="all";
+  document.getElementById("filter-aroma").value="all";
+  document.getElementById("filter-min-price").value="";
+  document.getElementById("filter-max-price").value="";
+  activeFilters={search:"",gender:"all",aroma:"all",minPrice:"",maxPrice:""};
+  applyProductFilters();
+}
+document.getElementById("product-search").addEventListener("input",function(e){
+  activeFilters.search=e.target.value.trim();
+  applyProductFilters();
 });
+document.getElementById("filter-gender").addEventListener("change",function(e){
+  activeFilters.gender=e.target.value;
+  applyProductFilters();
+});
+document.getElementById("filter-aroma").addEventListener("change",function(e){
+  activeFilters.aroma=e.target.value;
+  applyProductFilters();
+});
+document.getElementById("filter-min-price").addEventListener("input",function(e){
+  activeFilters.minPrice=e.target.value;
+  applyProductFilters();
+});
+document.getElementById("filter-max-price").addEventListener("input",function(e){
+  activeFilters.maxPrice=e.target.value;
+  applyProductFilters();
+});
+document.getElementById("clear-filters").addEventListener("click",clearProductFilters);
+renderProducts(products);
 if(document.getElementById("grid-extractos").children.length){document.getElementById("soon").hidden=true;}
 var cart={};
 try{var sv=localStorage.getItem("th-cart");if(sv){cart=JSON.parse(sv)||{};}}catch(e){}
