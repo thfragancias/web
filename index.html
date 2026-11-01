@@ -845,12 +845,12 @@ function renderProducts(list){
     else{grid.appendChild(c);count100++;}
   });
   heading100.hidden=count100===0;
-  headingExtractos.hidden=countExtractos===0;
   var activeFilterTotal=(activeFilters.gender!=="all"?1:0)+(activeFilters.aroma!=="all"?1:0)+(activeFilters.minPrice!==""?1:0)+(activeFilters.maxPrice!==""?1:0);
   var activeFilterBadge=document.getElementById("active-filter-count");
   activeFilterBadge.textContent=activeFilterTotal;
   activeFilterBadge.hidden=activeFilterTotal===0;
   var hasActive=!!(activeFilters.search || activeFilterTotal>0);
+  headingExtractos.hidden=hasActive && countExtractos===0;
   soonMessage.hidden=hasActive || countExtractos>0;
   catalogEmpty.hidden=list.length>0;
   filterCount.textContent="Mostrando "+list.length+" "+(list.length===1?"perfume":"perfumes");
