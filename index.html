@@ -58,6 +58,208 @@ body.open .drawer{transform:none}
 .social{display:flex;justify-content:center;gap:24px;margin:0}.social a{display:inline-flex;color:var(--ink)}.social svg{width:26px;height:26px}
 footer{text-align:center;color:var(--mute);font-size:.78rem;padding:32px 20px 48px;border-top:1px solid var(--line)}
 footer a{color:var(--ink)}
+
+/* TH Fragancias — refinamiento visual */
+:root{
+  --th-gold:#b59a68;
+  --th-gold-soft:rgba(181,154,104,.24);
+}
+header{
+  padding:clamp(50px,7vw,72px) 20px 38px;
+}
+h1{
+  letter-spacing:.18em;
+  text-shadow:0 1px 18px rgba(181,154,104,.10);
+}
+.sub{
+  letter-spacing:.25em;
+  font-weight:400;
+}
+.rule{
+  width:58px;
+  background:linear-gradient(90deg,transparent,var(--th-gold),transparent);
+  opacity:1;
+}
+main{
+  max-width:1080px;
+  padding:14px 20px 64px;
+}
+.grid{
+  gap:clamp(14px,2.2vw,24px);
+}
+.card{
+  border-radius:4px;
+  overflow:hidden;
+  box-shadow:0 8px 28px rgba(28,26,23,.055);
+  transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:var(--th-gold-soft);
+  box-shadow:0 14px 34px rgba(28,26,23,.10);
+}
+.ph{
+  overflow:hidden;
+  padding:12px;
+  background:linear-gradient(145deg,#fff 0%,#f8f6f2 100%);
+}
+.ph img{
+  object-fit:contain;
+  transition:transform .45s ease;
+}
+.card:hover .ph img{
+  transform:scale(1.035);
+}
+.info{
+  padding:20px;
+}
+.name{
+  letter-spacing:.01em;
+}
+.meta{
+  letter-spacing:.015em;
+}
+.price{
+  font-weight:500;
+}
+.btn{
+  border:1px solid transparent;
+  border-radius:2px;
+  transition:background .22s ease,color .22s ease,border-color .22s ease,transform .22s ease;
+}
+.btn:hover{
+  opacity:1;
+  background:var(--th-gold);
+  border-color:var(--th-gold);
+  color:#fff;
+}
+button.btn:active,.fab:active{
+  transform:scale(.985);
+}
+.cat{
+  position:relative;
+  letter-spacing:.18em;
+  border-bottom-color:var(--line);
+}
+.cat::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-1px;
+  width:48px;
+  height:1px;
+  background:var(--th-gold);
+}
+.box{
+  border-radius:4px;
+  box-shadow:0 6px 22px rgba(28,26,23,.035);
+  transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+}
+.box:hover{
+  transform:translateY(-3px);
+  border-color:var(--th-gold-soft);
+  box-shadow:0 10px 26px rgba(28,26,23,.07);
+}
+.box svg{
+  color:var(--th-gold);
+}
+.fab{
+  outline:1px solid var(--th-gold-soft);
+  outline-offset:3px;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.drawer{
+  box-shadow:-18px 0 50px rgba(0,0,0,.12);
+}
+body.open{
+  overflow:hidden;
+}
+:focus-visible{
+  outline:2px solid var(--th-gold);
+  outline-offset:3px;
+}
+@media(max-width:640px){
+  header{
+    padding:48px 16px 30px;
+  }
+  h1{
+    font-size:clamp(1.65rem,7vw,2.25rem);
+    letter-spacing:.14em;
+  }
+  .sub{
+    font-size:.66rem;
+    letter-spacing:.2em;
+  }
+  main{
+    padding:10px 14px 48px;
+  }
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+  .info{
+    padding:14px 12px;
+  }
+  .name{
+    font-size:1.2rem;
+  }
+  .meta{
+    font-size:.72rem;
+  }
+  .price{
+    font-size:.98rem;
+  }
+  .info .btn{
+    margin-top:12px;
+  }
+  .btn{
+    padding:11px 7px;
+    font-size:.68rem;
+    letter-spacing:.08em;
+  }
+  .cat{
+    margin:32px 0 16px;
+    font-size:1rem;
+  }
+  .ph{
+    padding:8px;
+  }
+  .cols{
+    gap:12px;
+  }
+  .box{
+    padding:22px 16px;
+  }
+  .fab{
+    right:16px;
+    bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  }
+}
+@media(max-width:360px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+  .info{
+    padding:18px;
+  }
+  .name{
+    font-size:1.35rem;
+  }
+  .meta{
+    font-size:.78rem;
+  }
+  .btn{
+    font-size:.74rem;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+    animation-duration:.01ms!important;
+  }
+}
+
 </style>
 </head>
 <body>
