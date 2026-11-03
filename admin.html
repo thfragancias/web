@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Administración · TH Fragancias</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+:root{--bg:#faf8f5;--card:#fff;--ink:#1c1a17;--mute:#7a746b;--line:#e8e3da;--gold:#b59a68;--danger:#a33d32;--good:#3d7153}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:300 16px/1.55 Jost,system-ui,sans-serif}
+header{padding:28px 20px 22px;text-align:center;border-bottom:1px solid var(--line);background:var(--card)}
+header img{width:126px;height:auto;display:block;margin:0 auto 8px}
+header p{margin:0;color:var(--mute);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase}
+main{width:min(1040px,calc(100% - 32px));margin:28px auto 60px}
+h1,h2{font-family:Cinzel,Georgia,serif;font-weight:400;letter-spacing:.08em}
+h1{font-size:1.35rem;text-align:center;margin:0 0 22px}
+h2{font-size:1rem;margin:0 0 16px}
+.panel{background:var(--card);border:1px solid var(--line);padding:24px;box-shadow:0 8px 24px rgba(28,26,23,.04);margin-bottom:18px}
+.hidden{display:none!important}
+label{display:block;margin:0 0 6px;color:var(--mute);font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+input,select,textarea{width:100%;min-height:42px;padding:10px 12px;border:1px solid var(--line);border-radius:2px;background:#fff;color:var(--ink);font:400 .9rem Jost,system-ui,sans-serif}
+textarea{min-height:78px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:1px solid var(--gold);border-color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{min-width:0}
+.field.full{grid-column:1/-1}
+.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+button,.link-button{min-height:40px;padding:9px 16px;border:1px solid var(--ink);border-radius:2px;background:var(--ink);color:#fff;font:400 .76rem Jost,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+button.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+button.danger{background:transparent;color:var(--danger);border-color:#d9b9b4}
+button:disabled{opacity:.55;cursor:wait}
+.small{font-size:.8rem;color:var(--mute)}
+.status{padding:10px 12px;margin:0 0 14px;background:#f0ece4;color:var(--ink);font-size:.83rem}
+.status.error{background:#f8e9e6;color:#7b261f}
+.status.success{background:#e9f2eb;color:#285a3c}
+.product-list{display:grid;gap:10px}
+.product-row{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:14px;padding:12px;border:1px solid var(--line)}
+.product-row img,.product-placeholder{width:64px;height:64px;object-fit:contain;background:#f7f5f0}
+.product-placeholder{display:grid;place-items:center;color:var(--mute);font-size:.7rem}
+.product-row strong{display:block;font-weight:500}
+.product-row .small{display:block}
+.product-row-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.checkbox-row{display:flex;align-items:center;gap:9px}
+.checkbox-row input{width:18px;min-height:18px}
+.checkbox-row label{margin:0}
+#image-preview{width:90px;height:90px;object-fit:contain;background:#f7f5f0;border:1px solid var(--line);margin-top:8px}
+@media(max-width:640px){
+  main{width:calc(100% - 20px);margin-top:16px}
+  .panel{padding:17px}
+  .grid{grid-template-columns:1fr}
+  .product-row{grid-template-columns:52px 1fr;gap:10px}
+  .product-row img,.product-placeholder{width:52px;height:52px}
+  .product-row-actions{grid-column:1/-1;justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+<header>
+  <img src="th-logo-transparent.png" alt="TH Fragancias" onerror="this.style.display='none'">
+  <p>Panel privado de administración</p>
+</header>
+<main>
+  <h1>Administración de productos</h1>
+  <div id="setup-notice" class="panel hidden">
+    <h2>Conectá la base de datos</h2>
+    <p>Primero configurá Supabase. Seguí los pasos del archivo <strong>ADMIN-INSTALACION.md</strong> del repositorio. Esta pantalla no guarda contraseñas ni claves secretas.</p>
+  </div>
+  <section id="login-panel" class="panel hidden">
+    <h2>Ingresar</h2>
+    <div id="login-message" class="status hidden" role="status"></div>
+    <form id="login-form">
+      <div class="grid">
+        <div class="field full"><label for="email">Correo electrónico</label><input id="email" type="email" required autocomplete="username"></div>
+        <div class="field full"><label for="password">Contraseña</label><input id="password" type="password" required autocomplete="current-password"></div>
+      </div>
+      <div class="actions"><button id="login-button" type="submit">Entrar al panel</button><a class="link-button secondary" href="./">Volver a la tienda</a></div>
+    </form>
+  </section>
+  <section id="dashboard" class="hidden">
+    <div class="panel">
+      <div class="actions" style="justify-content:space-between;margin-top:0">
+        <div><h2 style="margin:0">Tu catálogo</h2><p class="small" style="margin:4px 0 0">Los cambios se reflejan en la tienda pública.</p></div>
+        <button class="secondary" id="logout-button" type="button">Cerrar sesión</button>
+      </div>
+      <div id="dashboard-message" class="status hidden" role="status" style="margin-top:16px"></div>
+    </div>
+    <div class="panel">
+      <h2 id="form-title">Agregar perfume</h2>
+      <form id="product-form">
+        <input type="hidden" id="product-id">
+        <div class="grid">
+          <div class="field full"><label for="product-name">Nombre del perfume</label><input id="product-name" maxlength="120" required></div>
+          <div class="field"><label for="product-meta">Detalle breve (ej. Masculino · 100 ml)</label><input id="product-meta" maxlength="100" required></div>
+          <div class="field"><label for="product-price">Precio en pesos</label><input id="product-price" type="number" min="0" step="1" inputmode="numeric" required></div>
+          <div class="field"><label for="product-category">Categoría</label><select id="product-category"><option value="100ml">Perfumes 100 ml</option><option value="extractos">Extractos 60 ml</option></select></div>
+          <div class="field"><label for="product-gender">Género</label><select id="product-gender"><option>Masculino</option><option>Femenino</option><option selected>Unisex</option></select></div>
+          <div class="field"><label for="product-aromas">Familias de aroma</label><input id="product-aromas" placeholder="Fresco, Dulce, Intenso"></div>
+          <div class="field"><label for="product-seasons">Temporadas</label><input id="product-seasons" placeholder="Primavera, Verano"></div>
+          <div class="field full"><label for="product-description">Descripción del aroma</label><textarea id="product-description"></textarea></div>
+          <div class="field"><label for="product-top">Notas de salida</label><textarea id="product-top"></textarea></div>
+          <div class="field"><label for="product-heart">Notas de corazón</label><textarea id="product-heart"></textarea></div>
+          <div class="field"><label for="product-base">Notas de fondo</label><textarea id="product-base"></textarea></div>
+          <div class="field"><label for="product-occasion">Ocasión recomendada</label><textarea id="product-occasion"></textarea></div>
+          <div class="field"><label for="product-format">Presentación</label><input id="product-format" placeholder="100 ml · Eau de Parfum"></div>
+          <div class="field"><label for="product-order">Orden de aparición</label><input id="product-order" type="number" min="0" step="1" value="0"></div>
+          <div class="field full"><label for="product-image">Fotografía del perfume (JPG, PNG o WEBP; máximo 5 MB)</label><input id="product-image" type="file" accept="image/jpeg,image/png,image/webp"><img id="image-preview" class="hidden" alt="Vista previa de la fotografía"><p class="small" id="current-image-note">Podés dejarlo vacío para conservar la foto actual.</p></div>
+          <div class="field full checkbox-row"><input id="product-active" type="checkbox" checked><label for="product-active">Mostrar este perfume en la tienda</label></div>
+        </div>
+        <div class="actions">
+          <button id="save-button" type="submit">Guardar perfume</button>
+          <button class="secondary" id="reset-button" type="button">Limpiar formulario</button>
+        </div>
+      </form>
+    </div>
+    <div class="panel">
+      <h2>Productos cargados</h2>
+      <div id="product-list" class="product-list"></div>
+    </div>
+  </section>
+</main>
+<script src="./supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  "use strict";
+  var config=window.TH_SUPABASE_CONFIG||{};
+  var setupNotice=document.getElementById("setup-notice");
+  var loginPanel=document.getElementById("login-panel");
+  var dashboard=document.getElementById("dashboard");
+  var loginMessage=document.getElementById("login-message");
+  var dashboardMessage=document.getElementById("dashboard-message");
+  var list=document.getElementById("product-list");
+  var form=document.getElementById("product-form");
+  var currentProducts=[];
+  var currentImageUrl="";
+  var client=null;
+
+  function message(el,text,type){
+    el.textContent=text;
+    el.className="status"+(type?" "+type:"");
+    el.classList.remove("hidden");
+  }
+  function hideMessage(el){el.classList.add("hidden");}
+  function showLogin(){
+    dashboard.classList.add("hidden");
+    loginPanel.classList.remove("hidden");
+  }
+  function showDashboard(){
+    loginPanel.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+  }
+  function getValue(id){return document.getElementById(id).value.trim();}
+  function csv(value){
+    return value.split(",").map(function(x){return x.trim();}).filter(Boolean);
+  }
+  function setValue(id,value){
+    document.getElementById(id).value=value==null?"":value;
+  }
+  function resetForm(){
+    form.reset();
+    setValue("product-id","");
+    setValue("product-order","0");
+    document.getElementById("product-active").checked=true;
+    document.getElementById("form-title").textContent="Agregar perfume";
+    document.getElementById("save-button").textContent="Guardar perfume";
+    document.getElementById("image-preview").classList.add("hidden");
+    document.getElementById("current-image-note").textContent="Podés dejarlo vacío para conservar la foto actual.";
+    currentImageUrl="";
+  }
+  function editProduct(p){
+    setValue("product-id",p.id);
+    setValue("product-name",p.name);
+    setValue("product-meta",p.meta);
+    setValue("product-price",p.price);
+    setValue("product-category",p.category);
+    setValue("product-gender",p.gender);
+    setValue("product-aromas",(p.aromas||[]).join(", "));
+    setValue("product-seasons",(p.seasons||[]).join(", "));
+    setValue("product-description",p.description);
+    setValue("product-top",p.top_notes);
+    setValue("product-heart",p.heart_notes);
+    setValue("product-base",p.base_notes);
+    setValue("product-occasion",p.occasion);
+    setValue("product-format",p.format);
+    setValue("product-order",p.sort_order);
+    document.getElementById("product-active").checked=!!p.active;
+    currentImageUrl=p.image_url||"";
+    var preview=document.getElementById("image-preview");
+    if(currentImageUrl){preview.src=currentImageUrl;preview.classList.remove("hidden");}
+    else{preview.classList.add("hidden");}
+    document.getElementById("current-image-note").textContent=currentImageUrl?"Foto actual cargada. Subí otra para reemplazarla.":"Todavía no tiene foto.";
+    document.getElementById("form-title").textContent="Editar perfume";
+    document.getElementById("save-button").textContent="Guardar cambios";
+    form.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  function renderList(){
+    list.textContent="";
+    if(!currentProducts.length){
+      var empty=document.createElement("p");
+      empty.className="small";
+      empty.textContent="Todavía no hay perfumes cargados.";
+      list.appendChild(empty);
+      return;
+    }
+    currentProducts.forEach(function(p){
+      var row=document.createElement("div");row.className="product-row";
+      if(p.image_url){
+        var image=document.createElement("img");image.src=p.image_url;image.alt="";
+        row.appendChild(image);
+      }else{
+        var placeholder=document.createElement("div");placeholder.className="product-placeholder";placeholder.textContent="Sin foto";row.appendChild(placeholder);
+      }
+      var info=document.createElement("div");
+      var title=document.createElement("strong");title.textContent=p.name;
+      var price=document.createElement("span");price.className="small";price.textContent="$"+Number(p.price).toLocaleString("es-AR")+" · "+(p.active?"Visible":"Oculto");
+      var meta=document.createElement("span");meta.className="small";meta.textContent=p.meta;
+      info.append(title,price,meta);row.appendChild(info);
+      var actions=document.createElement("div");actions.className="product-row-actions";
+      var edit=document.createElement("button");edit.type="button";edit.className="secondary";edit.textContent="Editar";
+      edit.addEventListener("click",function(){editProduct(p);});
+      var remove=document.createElement("button");remove.type="button";remove.className="danger";remove.textContent="Eliminar";
+      remove.addEventListener("click",async function(){
+        if(!window.confirm("¿Eliminar "+p.name+" del catálogo?"))return;
+        var result=await client.from("products").delete().eq("id",p.id);
+        if(result.error){message(dashboardMessage,"No se pudo eliminar: "+result.error.message,"error");return;}
+        message(dashboardMessage,"Producto eliminado.","success");
+        await loadProducts();
+        if(getValue("product-id")===p.id)resetForm();
+      });
+      actions.append(edit,remove);row.appendChild(actions);list.appendChild(row);
+    });
+  }
+  async function loadProducts(){
+    var result=await client.from("products").select("*").order("sort_order",{ascending:true}).order("name",{ascending:true});
+    if(result.error){message(dashboardMessage,"No se pudo cargar el catálogo: "+result.error.message,"error");return;}
+    currentProducts=result.data||[];
+    renderList();
+  }
+  async function checkAdmin(){
+    var result=await client.rpc("is_th_admin");
+    if(result.error||result.data!==true){
+      await client.auth.signOut();
+      showLogin();
+      message(loginMessage,"Esta cuenta no tiene permisos de administración. Agregá su UUID a la tabla admin_users en Supabase.","error");
+      return;
+    }
+    hideMessage(loginMessage);
+    showDashboard();
+    await loadProducts();
+  }
+
+  if(!config.url||!config.publishableKey||!window.supabase||!window.supabase.createClient){
+    setupNotice.classList.remove("hidden");
+  }else{
+    client=window.supabase.createClient(config.url,config.publishableKey);
+    loginPanel.classList.remove("hidden");
+    client.auth.getSession().then(function(result){
+      if(result.data.session)checkAdmin();
+      else showLogin();
+    });
+  }
+
+  document.getElementById("login-form").addEventListener("submit",async function(event){
+    event.preventDefault();
+    if(!client){return;}
+    var button=document.getElementById("login-button");
+    button.disabled=true;
+    hideMessage(loginMessage);
+    var result=await client.auth.signInWithPassword({email:getValue("email"),password:document.getElementById("password").value});
+    button.disabled=false;
+    if(result.error){message(loginMessage,"No se pudo iniciar sesión. Revisá el correo y la contraseña.","error");return;}
+    await checkAdmin();
+  });
+  document.getElementById("logout-button").addEventListener("click",async function(){
+    if(client)await client.auth.signOut();
+    showLogin();
+  });
+  document.getElementById("reset-button").addEventListener("click",resetForm);
+  document.getElementById("product-image").addEventListener("change",function(){
+    var file=this.files&&this.files[0];
+    if(!file)return;
+    if(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>5*1024*1024){
+      message(dashboardMessage,"La foto debe ser JPG, PNG o WEBP y pesar hasta 5 MB.","error");
+      this.value="";
+      return;
+    }
+    var preview=document.getElementById("image-preview");
+    preview.src=URL.createObjectURL(file);
+    preview.classList.remove("hidden");
+  });
+  form.addEventListener("submit",async function(event){
+    event.preventDefault();
+    if(!client)return;
+    var name=getValue("product-name");
+    var price=Number(getValue("product-price"));
+    if(!name||!Number.isFinite(price)||price<0){
+      message(dashboardMessage,"Completá un nombre y un precio válido.","error");return;
+    }
+    var button=document.getElementById("save-button");
+    button.disabled=true;
+    hideMessage(dashboardMessage);
+    var imageFile=document.getElementById("product-image").files[0];
+    var imageUrl=currentImageUrl;
+    try{
+      if(imageFile){
+        var extension=imageFile.name.split(".").pop().toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
+        var filePath="products/"+Date.now()+"-"+Math.random().toString(36).slice(2)+"."+extension;
+        var upload=await client.storage.from("product-images").upload(filePath,imageFile,{cacheControl:"3600",upsert:false});
+        if(upload.error)throw upload.error;
+        imageUrl=client.storage.from("product-images").getPublicUrl(filePath).data.publicUrl;
+      }
+      var payload={
+        name:name,
+        meta:getValue("product-meta"),
+        price:Math.round(price),
+        category:getValue("product-category"),
+        gender:getValue("product-gender"),
+        aromas:csv(getValue("product-aromas")),
+        seasons:csv(getValue("product-seasons")),
+        description:getValue("product-description"),
+        top_notes:getValue("product-top"),
+        heart_notes:getValue("product-heart"),
+        base_notes:getValue("product-base"),
+        occasion:getValue("product-occasion"),
+        format:getValue("product-format"),
+        image_url:imageUrl||null,
+        active:document.getElementById("product-active").checked,
+        sort_order:Number(getValue("product-order"))||0,
+        updated_at:new Date().toISOString()
+      };
+      var id=getValue("product-id");
+      var result=id
+        ?await client.from("products").update(payload).eq("id",id).select().single()
+        :await client.from("products").insert(payload).select().single();
+      if(result.error)throw result.error;
+      message(dashboardMessage,"Perfume guardado correctamente. Ya está actualizado el catálogo.","success");
+      resetForm();
+      await loadProducts();
+    }catch(error){
+      message(dashboardMessage,"No se pudo guardar: "+(error.message||"revisá la conexión y los permisos."),"error");
+    }finally{
+      button.disabled=false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
