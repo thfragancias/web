@@ -3,5 +3,5 @@
 // Nunca coloques aquí una secret key ni service_role.
 window.TH_SUPABASE_CONFIG = {
   url: "sb_publishable_RsuPznlqxrOz1W69YqGKSA_5PcBeNs5",
-  publishableKey: "sb_publishable_RsuPznlqxrOz1W69YqGKSA_5PcBeNs5"
+  publishableKey: "https://noestjbjakabkjtunvzh.supabase.co"
 };
