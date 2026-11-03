@@ -46,14 +46,6 @@ window.TH_SUPABASE_CONFIG = {
 
 3. Guardá el archivo con **Commit changes**. La Publishable key está diseñada para usarse en el navegador; nunca pongas una Secret key o service_role aquí.
 
-## 5. Entrar al panel
-
-Cuando GitHub Pages termine de publicar, abrí:
-
-[https://thfragancias.github.io/web/admin.html](https://thfragancias.github.io/web/admin.html)
-
-Ingresá con el correo y la contraseña que creaste en Supabase. Desde ahí podés agregar, editar, ocultar, eliminar y subir fotos de perfumes.
-
 ## Importante
 
 - Los dos perfumes actuales se cargan desde el SQL. Sus fotos actuales se conservan en la tienda como respaldo hasta que reemplaces/subas una imagen desde el panel.
