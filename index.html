@@ -634,6 +634,64 @@ body.detail-open{overflow:hidden}
   .brand-logo{width:min(205px,70vw);max-height:126px}
 }
 
+
+/* Colecciones olfativas por temporada */
+.season-collections{margin:0 0 30px}
+.season-heading .cat{margin-top:8px;margin-bottom:8px}
+.season-heading p{margin:0 0 15px;color:var(--mute);font-size:.84rem}
+.season-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.season-card{
+  position:relative;
+  display:flex;
+  min-width:0;
+  min-height:132px;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-end;
+  gap:4px;
+  overflow:hidden;
+  padding:15px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:var(--card);
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease,background .2s ease;
+}
+.season-card:hover{transform:translateY(-2px);border-color:var(--th-gold);box-shadow:0 8px 22px rgba(28,26,23,.07)}
+.season-card[aria-pressed="true"]{border-color:var(--th-gold);box-shadow:inset 0 0 0 1px var(--th-gold),0 8px 22px rgba(28,26,23,.07);background:var(--bg)}
+.season-art{
+  position:absolute;
+  top:-28px;
+  right:-17px;
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  opacity:.8;
+  filter:blur(.2px);
+}
+.season-card[data-season="Primavera"] .season-art{background:radial-gradient(circle at 35% 35%,#e8d6cc 0 12%,#c7ab9a 40%,#e7dcd1 72%,transparent 73%)}
+.season-card[data-season="Verano"] .season-art{background:radial-gradient(circle at 35% 35%,#f1d99e 0 14%,#d7b768 43%,#f3e8ce 72%,transparent 73%)}
+.season-card[data-season="Otoño"] .season-art{background:radial-gradient(circle at 35% 35%,#d9aa83 0 14%,#a86d4f 43%,#ead3bd 72%,transparent 73%)}
+.season-card[data-season="Invierno"] .season-art{background:radial-gradient(circle at 35% 35%,#c4d0d1 0 14%,#8a9fa3 43%,#e2e8e5 72%,transparent 73%)}
+.season-label{position:relative;color:var(--th-gold);font-size:.62rem;font-weight:500;letter-spacing:.18em}
+.season-card strong{position:relative;font-family:"Cormorant Garamond",Georgia,serif;font-size:1.22rem;font-weight:500;line-height:1.15}
+.season-caption{position:relative;color:var(--mute);font-size:.72rem;line-height:1.35}
+@media(max-width:760px){
+  .season-collections{margin-bottom:24px}
+  .season-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .season-card{min-height:116px;padding:12px}
+  .season-art{width:78px;height:78px;right:-18px;top:-25px}
+  .season-card strong{font-size:1.12rem}
+  .season-caption{font-size:.68rem}
+}
+@media(max-width:360px){
+  .season-grid{gap:7px}
+  .season-card{min-height:108px;padding:10px}
+  .season-card strong{font-size:1rem}
+}
+
 </style>
 </head>
 <body>
@@ -643,6 +701,39 @@ body.detail-open{overflow:hidden}
   <div class="rule"></div>
 </header>
 <main>
+
+<section class="season-collections" aria-label="Colecciones por temporada">
+  <div class="season-heading">
+    <h2 class="cat">Colecciones por temporada</h2>
+    <p>Encontrá una fragancia para cada momento del año.</p>
+  </div>
+  <div class="season-grid">
+    <button class="season-card" type="button" data-season="Primavera" aria-pressed="false">
+      <span class="season-art" aria-hidden="true"></span>
+      <span class="season-label">PRIMAVERA</span>
+      <strong>Aromas frescos</strong>
+      <span class="season-caption">Cítricos y notas luminosas</span>
+    </button>
+    <button class="season-card" type="button" data-season="Verano" aria-pressed="false">
+      <span class="season-art" aria-hidden="true"></span>
+      <span class="season-label">VERANO</span>
+      <strong>Frescura y energía</strong>
+      <span class="season-caption">Fragancias para días cálidos</span>
+    </button>
+    <button class="season-card" type="button" data-season="Otoño" aria-pressed="false">
+      <span class="season-art" aria-hidden="true"></span>
+      <span class="season-label">OTOÑO</span>
+      <strong>Aromas envolventes</strong>
+      <span class="season-caption">Dulces y especiados</span>
+    </button>
+    <button class="season-card" type="button" data-season="Invierno" aria-pressed="false">
+      <span class="season-art" aria-hidden="true"></span>
+      <span class="season-label">INVIERNO</span>
+      <strong>Intensidad y calidez</strong>
+      <span class="season-caption">Notas cálidas y profundas</span>
+    </button>
+  </div>
+</section>
   <section class="catalog-tools" aria-label="Buscador y filtros de perfumes">
   <div class="catalog-toolbar">
     <div class="catalog-search">
@@ -861,11 +952,11 @@ var filterCount=document.getElementById("filter-count");
 var catalogEmpty=document.getElementById("catalog-empty");
 
 var productFilters = {
-  "Perfume G5 9pm Afnan": {gender:"Masculino", aromas:["Dulce","Intenso"]},
-  "Perfume G5 Odyssey Mandarin Sky": {gender:"Unisex", aromas:["Fresco","Dulce"]}
+  "Perfume G5 9pm Afnan": {gender:"Masculino", aromas:["Dulce","Intenso"], seasons:["Otoño","Invierno"]},
+  "Perfume G5 Odyssey Mandarin Sky": {gender:"Unisex", aromas:["Fresco","Dulce"], seasons:["Primavera","Verano"]}
 };
 
-var activeFilters={search:"",gender:"all",aroma:"all",minPrice:"",maxPrice:""};
+var activeFilters={search:"",gender:"all",aroma:"all",minPrice:"",maxPrice:"",season:"all"};
 function matchesProduct(p){
   var f=productFilters[p.name]||{};
   var detail=productDetails[p.name]||{};
@@ -873,6 +964,7 @@ function matchesProduct(p){
   if(activeFilters.search && searchable.indexOf(activeFilters.search.toLocaleLowerCase("es"))===-1){return false;}
   if(activeFilters.gender!=="all" && f.gender!==activeFilters.gender){return false;}
   if(activeFilters.aroma!=="all" && (!f.aromas || f.aromas.indexOf(activeFilters.aroma)===-1)){return false;}
+  if(activeFilters.season!=="all" && (!f.seasons || f.seasons.indexOf(activeFilters.season)===-1)){return false;}
   if(activeFilters.minPrice!=="" && p.price<Number(activeFilters.minPrice)){return false;}
   if(activeFilters.maxPrice!=="" && p.price>Number(activeFilters.maxPrice)){return false;}
   return true;
@@ -901,7 +993,10 @@ function renderProducts(list){
   var activeFilterBadge=document.getElementById("active-filter-count");
   activeFilterBadge.textContent=activeFilterTotal;
   activeFilterBadge.hidden=activeFilterTotal===0;
-  var hasActive=!!(activeFilters.search || activeFilterTotal>0);
+  var hasActive=!!(activeFilters.search || activeFilterTotal>0 || activeFilters.season!=="all");
+  document.querySelectorAll(".season-card").forEach(function(button){
+    button.setAttribute("aria-pressed",button.getAttribute("data-season")===activeFilters.season?"true":"false");
+  });
   headingExtractos.hidden=hasActive && countExtractos===0;
   soonMessage.hidden=hasActive || countExtractos>0;
   catalogEmpty.hidden=list.length>0;
@@ -916,7 +1011,7 @@ function clearProductFilters(){
   document.getElementById("filter-aroma").value="all";
   document.getElementById("filter-min-price").value="";
   document.getElementById("filter-max-price").value="";
-  activeFilters={search:"",gender:"all",aroma:"all",minPrice:"",maxPrice:""};
+  activeFilters={search:"",gender:"all",aroma:"all",minPrice:"",maxPrice:"",season:"all"};
   applyProductFilters();
 }
 document.getElementById("product-search").addEventListener("input",function(e){
@@ -940,6 +1035,13 @@ document.getElementById("filter-max-price").addEventListener("input",function(e)
   applyProductFilters();
 });
 document.getElementById("clear-filters").addEventListener("click",clearProductFilters);
+document.querySelectorAll(".season-card").forEach(function(button){
+  button.addEventListener("click",function(){
+    var selected=button.getAttribute("data-season");
+    activeFilters.season=activeFilters.season===selected?"all":selected;
+    applyProductFilters();
+  });
+});
 renderProducts(products);
 if(document.getElementById("grid-extractos").children.length){document.getElementById("soon").hidden=true;}
 var cart={};
