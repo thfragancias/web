@@ -29,6 +29,8 @@ main{max-width:1000px;margin:0 auto;padding:16px 20px 64px}
 .name{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.45rem;font-weight:500;line-height:1.2}
 .meta{color:var(--mute);font-size:.8rem}
 .stock-label{display:inline-block;width:max-content;margin-top:4px;padding:5px 8px;border:1px solid var(--line);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.stock-label.sold-out{background:#f3e8e6;border-color:#c9a29b;color:#8b3028}
+.btn:disabled{opacity:.48;cursor:not-allowed;background:var(--mute);color:#fff;border-color:var(--mute)}
 .price{font-size:1.05rem;font-weight:400;margin-top:6px}
 .btn{margin-top:auto;display:block;text-align:center;background:var(--accent);color:var(--accent-ink);text-decoration:none;padding:12px;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:400}
 .btn:hover{opacity:.85}
@@ -988,11 +990,13 @@ function renderProducts(list){
     var info=document.createElement("div");info.className="info";
     var n=document.createElement("button");n.type="button";n.className="name product-name-trigger";n.textContent=p.name;n.setAttribute("aria-label","Ver detalles de "+p.name);n.onclick=function(){openProductDetails(p,n);};
     var m=document.createElement("div");m.className="meta";m.textContent=p.meta;
-    if(p.stock===1){var stock=document.createElement("div");stock.className="stock-label";stock.textContent="Stock muy limitado";info.append(n,m,stock);}
+    info.append(n,m);
+    if(p.inStock===false){var stock=document.createElement("div");stock.className="stock-label sold-out";stock.textContent="Agotado";info.appendChild(stock);}
+    else if(p.stock===1){var stockLimited=document.createElement("div");stockLimited.className="stock-label";stockLimited.textContent="Stock muy limitado";info.appendChild(stockLimited);}
     var pr=document.createElement("div");pr.className="price";pr.textContent="$"+p.price.toLocaleString("es-AR");
     var b=document.createElement("button");b.className="btn";b.type="button";
-    b.textContent="Agregar al carrito";b.onclick=function(){add(p);b.textContent="Agregado ✓";setTimeout(function(){b.textContent="Agregar al carrito";},1200);};
-    if(p.stock!==1){info.append(n,m);}
+    if(p.inStock===false){b.textContent="Sin stock";b.disabled=true;b.setAttribute("aria-label",p.name+" agotado");}
+    else{b.textContent="Agregar al carrito";b.onclick=function(){add(p);b.textContent="Agregado ✓";setTimeout(function(){b.textContent="Agregar al carrito";},1200);};}
     info.append(pr,b);c.append(ph,info);
     if(p.cat==="extractos"){extractGrid.appendChild(c);countExtractos++;}
     else{grid.appendChild(c);count100++;}
@@ -1058,7 +1062,7 @@ try{var sv=localStorage.getItem("th-cart");if(sv){cart=JSON.parse(sv)||{};}}catc
 function save(){try{localStorage.setItem("th-cart",JSON.stringify(cart));}catch(e){}}
 function money(n){return "$"+n.toLocaleString("es-AR");}
 function items(){return products.filter(function(p){return cart[p.name];});}
-function add(p){cart[p.name]=(cart[p.name]||0)+1;save();render();}
+function add(p){if(p.inStock===false)return;cart[p.name]=(cart[p.name]||0)+1;save();render();}
 function chg(name,d){cart[name]=(cart[name]||0)+d;if(cart[name]<=0){delete cart[name];}save();render();}
 function openC(o){document.body.classList.toggle("open",o);}
 function render(){
@@ -1122,7 +1126,8 @@ async function loadProductsFromSupabase(){
         img:row.image_url||(fallback?fallback.img:""),
         gender:row.gender||"Unisex",
         aromas:row.aromas||[],
-        seasons:row.seasons||[]
+        seasons:row.seasons||[],
+        inStock:row.in_stock!==false
       };
     });
     fallbackProducts.forEach(function(item){
