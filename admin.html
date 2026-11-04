@@ -107,6 +107,7 @@ button:disabled{opacity:.55;cursor:wait}
           <div class="field"><label for="product-order">Orden de aparición</label><input id="product-order" type="number" min="0" step="1" value="0"></div>
           <div class="field full"><label for="product-image">Fotografía del perfume (JPG, PNG o WEBP; máximo 5 MB)</label><input id="product-image" type="file" accept="image/jpeg,image/png,image/webp"><img id="image-preview" class="hidden" alt="Vista previa de la fotografía"><p class="small" id="current-image-note">Podés dejarlo vacío para conservar la foto actual.</p></div>
           <div class="field full checkbox-row"><input id="product-active" type="checkbox" checked><label for="product-active">Mostrar este perfume en la tienda</label></div>
+          <div class="field full checkbox-row"><input id="product-in-stock" type="checkbox" checked><label for="product-in-stock">Producto disponible (desmarcar si está agotado)</label></div>
         </div>
         <div class="actions">
           <button id="save-button" type="submit">Guardar perfume</button>
@@ -163,6 +164,7 @@ button:disabled{opacity:.55;cursor:wait}
     setValue("product-id","");
     setValue("product-order","0");
     document.getElementById("product-active").checked=true;
+    document.getElementById("product-in-stock").checked=true;
     document.getElementById("form-title").textContent="Agregar perfume";
     document.getElementById("save-button").textContent="Guardar perfume";
     document.getElementById("image-preview").classList.add("hidden");
@@ -186,6 +188,7 @@ button:disabled{opacity:.55;cursor:wait}
     setValue("product-format",p.format);
     setValue("product-order",p.sort_order);
     document.getElementById("product-active").checked=!!p.active;
+    document.getElementById("product-in-stock").checked=p.in_stock!==false;
     currentImageUrl=p.image_url||"";
     var preview=document.getElementById("image-preview");
     if(currentImageUrl){preview.src=currentImageUrl;preview.classList.remove("hidden");}
@@ -214,7 +217,7 @@ button:disabled{opacity:.55;cursor:wait}
       }
       var info=document.createElement("div");
       var title=document.createElement("strong");title.textContent=p.name;
-      var price=document.createElement("span");price.className="small";price.textContent="$"+Number(p.price).toLocaleString("es-AR")+" · "+(p.active?"Visible":"Oculto");
+      var price=document.createElement("span");price.className="small";price.textContent="$"+Number(p.price).toLocaleString("es-AR")+" · "+(p.active?"Visible":"Oculto")+" · "+(p.in_stock===false?"Agotado":"Disponible");
       var meta=document.createElement("span");meta.className="small";meta.textContent=p.meta;
       info.append(title,price,meta);row.appendChild(info);
       var actions=document.createElement("div");actions.className="product-row-actions";
@@ -327,6 +330,7 @@ button:disabled{opacity:.55;cursor:wait}
         format:getValue("product-format"),
         image_url:imageUrl||null,
         active:document.getElementById("product-active").checked,
+        in_stock:document.getElementById("product-in-stock").checked,
         sort_order:Number(getValue("product-order"))||0,
         updated_at:new Date().toISOString()
       };
