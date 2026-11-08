@@ -599,6 +599,17 @@ body.detail-open{overflow:hidden}
   text-align:center;
   font-size:.9rem;
 }
+.catalog-loading-state{
+  min-height:260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--mute);
+  font-size:.78rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.catalog-loading-state[hidden]{display:none}
 @media(max-width:640px){
   .catalog-tools{margin-bottom:24px}
   .catalog-toolbar{gap:8px}
@@ -773,6 +784,7 @@ body.detail-open{overflow:hidden}
   </div>
 </section>
   <p class="catalog-empty" id="catalog-empty" hidden>No encontramos perfumes con esos filtros. Probá cambiando la búsqueda.</p>
+  <div class="catalog-loading-state" id="catalog-loading" hidden>Cargando catálogo</div>
   <h2 class="cat" id="heading-100">Perfumes 100ml</h2>
   <div class="grid" id="grid"></div>
   <h2 class="cat" id="heading-extractos">Extractos 60ml</h2>
@@ -991,6 +1003,18 @@ var headingExtractos=document.getElementById("heading-extractos");
 var soonMessage=document.getElementById("soon");
 var filterCount=document.getElementById("filter-count");
 var catalogEmpty=document.getElementById("catalog-empty");
+var catalogLoading=document.getElementById("catalog-loading");
+var remoteCatalogConfigured=!!(window.TH_SUPABASE_CONFIG&&window.TH_SUPABASE_CONFIG.url&&window.TH_SUPABASE_CONFIG.publishableKey);
+function finishCatalogLoading(){
+  catalogLoading.hidden=true;
+  heading100.hidden=false;grid.hidden=false;headingExtractos.hidden=false;extractGrid.hidden=false;soonMessage.hidden=false;
+  renderProducts(products);
+  render();
+}
+if(remoteCatalogConfigured){
+  catalogLoading.hidden=false;
+  heading100.hidden=true;grid.hidden=true;headingExtractos.hidden=true;extractGrid.hidden=true;soonMessage.hidden=true;
+}
 
 var productFilters = {
   "Versace Eros Flame Extracto": {gender:"Masculino", aromas:["Cítrico","Especiado","Amaderado"], seasons:["Otoño","Invierno"]},
@@ -1090,8 +1114,8 @@ document.querySelectorAll(".season-card").forEach(function(button){
     applyProductFilters();
   });
 });
-renderProducts(products);
-if(document.getElementById("grid-extractos").children.length){document.getElementById("soon").hidden=true;}
+if(!remoteCatalogConfigured){renderProducts(products);}
+if(!remoteCatalogConfigured&&document.getElementById("grid-extractos").children.length){document.getElementById("soon").hidden=true;}
 var cart={};
 try{var sv=localStorage.getItem("th-cart");if(sv){cart=JSON.parse(sv)||{};}}catch(e){}
 function save(){try{localStorage.setItem("th-cart",JSON.stringify(cart));}catch(e){}}
@@ -1133,7 +1157,7 @@ document.getElementById("wa-review").href=link("Hola, compré en TH Fragancias y
 
 async function loadProductsFromSupabase(){
   var cfg=window.TH_SUPABASE_CONFIG||{};
-  if(!cfg.url||!cfg.publishableKey||!window.supabase||!window.supabase.createClient)return;
+  if(!cfg.url||!cfg.publishableKey||!window.supabase||!window.supabase.createClient){finishCatalogLoading();return;}
   try{
     var publicClient=window.supabase.createClient(cfg.url,cfg.publishableKey,{
       global:{
@@ -1143,7 +1167,7 @@ async function loadProductsFromSupabase(){
       }
     });
     var result=await publicClient.from("products").select("*").eq("active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});
-    if(result.error){console.warn("TH Fragancias: no se pudo cargar el catálogo remoto.",result.error.message);return;}
+    if(result.error){console.warn("TH Fragancias: no se pudo cargar el catálogo remoto.",result.error.message);finishCatalogLoading();return;}
     products=(result.data||[]).map(function(row){
       var fallback=fallbackProducts.find(function(item){return item.name===row.name;});
       productDetails[row.name]={
@@ -1177,10 +1201,10 @@ async function loadProductsFromSupabase(){
     fallbackProducts.forEach(function(item){
       if(!products.some(function(existing){return existing.name===item.name;})){products.push(item);}
     });
-    renderProducts(products);
-    render();
+    finishCatalogLoading();
   }catch(error){
     console.warn("TH Fragancias: no se pudo conectar con Supabase.",error);
+    finishCatalogLoading();
   }
 }
 
