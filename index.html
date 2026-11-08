@@ -1135,7 +1135,13 @@ async function loadProductsFromSupabase(){
   var cfg=window.TH_SUPABASE_CONFIG||{};
   if(!cfg.url||!cfg.publishableKey||!window.supabase||!window.supabase.createClient)return;
   try{
-    var publicClient=window.supabase.createClient(cfg.url,cfg.publishableKey);
+    var publicClient=window.supabase.createClient(cfg.url,cfg.publishableKey,{
+      global:{
+        fetch:function(url,options){
+          return fetch(url,Object.assign({},options||{},{cache:"no-store"}));
+        }
+      }
+    });
     var result=await publicClient.from("products").select("*").eq("active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});
     if(result.error){console.warn("TH Fragancias: no se pudo cargar el catálogo remoto.",result.error.message);return;}
     products=(result.data||[]).map(function(row){
