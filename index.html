@@ -416,6 +416,7 @@ button.product-name-trigger:hover{
   gap:14px;
   margin-top:18px;
 }
+#modal-performance[hidden]{display:none}
 .product-modal-footer{
   display:flex;
   align-items:center;
@@ -783,7 +784,7 @@ body.detail-open{overflow:hidden}
       <div class="box">
         <svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
         <h3>Entrega personal</h3>
-        <p>Entregas personales en Chacabuco, Buenos Aires.</p>
+        <p>Entregas personales en Chacabuco, Buenos Aires. Coordinamos el día y horario por WhatsApp.</p>
       </div>
       <div class="box">
         <svg viewBox="0 0 24 24"><path d="M3 6h11v10H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
@@ -797,6 +798,25 @@ body.detail-open{overflow:hidden}
       </div>
     </div>
     <a id="wa2" class="btn cta" href="#" target="_blank" rel="noopener">Consultar envíos y pagos</a>
+  </section>
+  <section id="sobre-th">
+    <h2 class="cat">Sobre TH Fragancias</h2>
+    <div class="cols">
+      <div class="box">
+        <h3>Un proyecto de Chacabuco</h3>
+        <p>TH Fragancias es un emprendimiento local dedicado a acercarte fragancias para distintos gustos y momentos. Queremos que puedas conocer cada aroma y elegir con confianza.</p>
+      </div>
+    </div>
+  </section>
+  <section id="opiniones">
+    <h2 class="cat">Tu opinión nos importa</h2>
+    <div class="cols">
+      <div class="box">
+        <h3>¿Ya compraste en TH Fragancias?</h3>
+        <p>Contanos qué te pareció tu perfume. Con tu autorización, podemos compartir tu opinión para ayudar a otros a elegir.</p>
+      </div>
+    </div>
+    <a id="wa-review" class="btn cta" href="#" target="_blank" rel="noopener">Compartir mi opinión</a>
   </section>
 </main>
 <footer>
@@ -843,6 +863,10 @@ body.detail-open{overflow:hidden}
       <div class="product-modal-extra">
         <div><span>RECOMENDADO PARA</span><p id="modal-occasion"></p></div>
         <div><span>PRESENTACIÓN</span><p id="modal-format"></p></div>
+      </div>
+      <div class="product-modal-extra" id="modal-performance" hidden>
+        <div><span>DURACIÓN ESTIMADA</span><p id="modal-duration"></p></div>
+        <div><span>ESTELA</span><p id="modal-sillage"></p></div>
       </div>
       <div class="product-modal-footer">
         <strong id="modal-price"></strong>
@@ -915,7 +939,9 @@ function openProductDetails(p,trigger){
     heart:"Consultar disponibilidad.",
     base:"Consultar disponibilidad.",
     occasion:"Ideal para descubrir un nuevo aroma.",
-    format:p.meta||"Consultar presentación."
+    format:p.meta||"Consultar presentación.",
+    duration:"",
+    sillage:""
   };
   modalProduct=p;
   lastDetailTrigger=trigger;
@@ -927,6 +953,9 @@ function openProductDetails(p,trigger){
   document.getElementById("modal-base").textContent=d.base;
   document.getElementById("modal-occasion").textContent=d.occasion;
   document.getElementById("modal-format").textContent=d.format;
+  document.getElementById("modal-duration").textContent=d.duration||"";
+  document.getElementById("modal-sillage").textContent=d.sillage||"";
+  document.getElementById("modal-performance").hidden=!(d.duration||d.sillage);
   document.getElementById("modal-price").textContent=money(p.price);
   var modalAdd=document.getElementById("modal-add");
   modalAdd.disabled=p.inStock===false;
@@ -1100,6 +1129,7 @@ document.getElementById("shade").onclick=function(){openC(false);};
 render();
 document.getElementById("wa").href=link("Hola, quiero consultar por un perfume.");
 document.getElementById("wa2").href=link("Hola, quiero consultar por las opciones de envío y los medios de pago.");
+document.getElementById("wa-review").href=link("Hola, compré en TH Fragancias y quiero compartir mi opinión sobre el perfume.");
 
 async function loadProductsFromSupabase(){
   var cfg=window.TH_SUPABASE_CONFIG||{};
@@ -1116,7 +1146,9 @@ async function loadProductsFromSupabase(){
         heart:row.heart_notes||"",
         base:row.base_notes||"",
         occasion:row.occasion||"",
-        format:row.format||row.meta||""
+        format:row.format||row.meta||"",
+        duration:row.duration||"",
+        sillage:row.sillage||""
       };
       productFilters[row.name]={
         gender:row.gender||"Unisex",

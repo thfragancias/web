@@ -1,6 +1,6 @@
 # Configurar el panel privado de TH Fragancias
 
-El panel permite agregar, editar, ocultar y eliminar perfumes; cambiar precios y descripciones; asignar género, aromas y temporadas; y subir fotos. La tienda pública lee el catálogo de Supabase.
+El panel permite agregar, editar, ocultar y eliminar perfumes; cambiar precios y descripciones; asignar género, aromas y temporadas; cargar duración estimada y estela; y subir fotos. La tienda pública lee el catálogo de Supabase.
 
 ## 1. Crear el proyecto
 
@@ -17,6 +17,7 @@ No copies ni compartas la **Secret key** ni una clave `service_role`. El sitio u
 1. En Supabase abrí **SQL Editor → New query**.
 2. Abrí el archivo `supabase-setup.sql` de este repositorio, copiá todo su contenido y pegalo en el editor.
 3. Ejecutá la consulta. Esto crea las tablas, los permisos, el almacenamiento de fotos y carga los dos perfumes que ya están en el catálogo.
+4. Si ya tenías Supabase configurado, podés volver a ejecutar el archivo actualizado: agrega las columnas de duración estimada y estela sin borrar los productos existentes.
 
 ## 3. Crear tu usuario administrador
 
@@ -50,6 +51,8 @@ window.TH_SUPABASE_CONFIG = {
 
 - Los dos perfumes actuales se cargan desde el SQL. Sus fotos actuales se conservan en la tienda como respaldo hasta que reemplaces/subas una imagen desde el panel.
 - Para imágenes nuevas se aceptan JPG, PNG o WEBP de hasta 5 MB.
+- La duración y la estela se completan desde el panel al editar cada perfume. Son datos orientativos: no los cargues como valores exactos si no están verificados para esa versión del producto.
+- La tienda no publica opiniones inventadas: el botón de opiniones permite que los compradores envíen su experiencia por WhatsApp y autoricen su publicación.
 - La tienda solo muestra productos activos.
 - Las cuentas que no estén en `admin_users` no pueden modificar el catálogo.
 - No compartas contraseñas, Secret keys ni service_role.

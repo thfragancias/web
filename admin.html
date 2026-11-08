@@ -104,6 +104,8 @@ button:disabled{opacity:.55;cursor:wait}
           <div class="field"><label for="product-base">Notas de fondo</label><textarea id="product-base"></textarea></div>
           <div class="field"><label for="product-occasion">Ocasión recomendada</label><textarea id="product-occasion"></textarea></div>
           <div class="field"><label for="product-format">Presentación</label><input id="product-format" placeholder="100 ml · Eau de Parfum"></div>
+          <div class="field"><label for="product-duration">Duración estimada</label><input id="product-duration" placeholder="Ej.: 6–8 horas (orientativo)"></div>
+          <div class="field"><label for="product-sillage">Estela</label><input id="product-sillage" placeholder="Suave, moderada o intensa"></div>
           <div class="field"><label for="product-order">Orden de aparición</label><input id="product-order" type="number" min="0" step="1" value="0"></div>
           <div class="field full"><label for="product-image">Fotografía del perfume (JPG, PNG o WEBP; máximo 5 MB)</label><input id="product-image" type="file" accept="image/jpeg,image/png,image/webp"><img id="image-preview" class="hidden" alt="Vista previa de la fotografía"><p class="small" id="current-image-note">Podés dejarlo vacío para conservar la foto actual.</p></div>
           <div class="field full checkbox-row"><input id="product-active" type="checkbox" checked><label for="product-active">Mostrar este perfume en la tienda</label></div>
@@ -186,6 +188,8 @@ button:disabled{opacity:.55;cursor:wait}
     setValue("product-base",p.base_notes);
     setValue("product-occasion",p.occasion);
     setValue("product-format",p.format);
+    setValue("product-duration",p.duration);
+    setValue("product-sillage",p.sillage);
     setValue("product-order",p.sort_order);
     document.getElementById("product-active").checked=!!p.active;
     document.getElementById("product-in-stock").checked=p.in_stock!==false;
@@ -328,6 +332,8 @@ button:disabled{opacity:.55;cursor:wait}
         base_notes:getValue("product-base"),
         occasion:getValue("product-occasion"),
         format:getValue("product-format"),
+        duration:getValue("product-duration"),
+        sillage:getValue("product-sillage"),
         image_url:imageUrl||null,
         active:document.getElementById("product-active").checked,
         in_stock:document.getElementById("product-in-stock").checked,

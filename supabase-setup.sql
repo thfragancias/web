@@ -29,11 +29,15 @@ create table if not exists public.products (
   sort_order integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  in_stock boolean not null default true
+  in_stock boolean not null default true,
+  duration text not null default '',
+  sillage text not null default ''
 );
 
 -- Estado de disponibilidad para marcar productos agotados sin ocultarlos.
 alter table public.products add column if not exists in_stock boolean not null default true;
+alter table public.products add column if not exists duration text not null default '';
+alter table public.products add column if not exists sillage text not null default '';
 
 create unique index if not exists products_name_lower_unique
   on public.products (lower(name));
