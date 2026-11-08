@@ -30,6 +30,8 @@ main{max-width:1000px;margin:0 auto;padding:16px 20px 64px}
 .meta{color:var(--mute);font-size:.8rem}
 .stock-label{display:inline-block;width:max-content;margin-top:4px;padding:5px 8px;border:1px solid var(--line);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
 .stock-label.sold-out{background:#f3e8e6;border-color:#c9a29b;color:#8b3028}
+.stock-label.available{border-color:rgba(86,128,93,.28);color:#52775a;background:rgba(86,128,93,.07)}
+.stock-label.limited{border-color:var(--th-gold-soft);color:var(--th-gold);background:rgba(181,154,104,.07)}
 .btn:disabled{opacity:.48;cursor:not-allowed;background:var(--mute);color:#fff;border-color:var(--mute)}
 .price{font-size:1.05rem;font-weight:400;margin-top:6px}
 .btn{margin-top:auto;display:block;text-align:center;background:var(--accent);color:var(--accent-ink);text-decoration:none;padding:12px;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:400}
@@ -995,7 +997,8 @@ function renderProducts(list){
     var m=document.createElement("div");m.className="meta";m.textContent=p.meta;
     info.append(n,m);
     if(p.inStock===false){var stock=document.createElement("div");stock.className="stock-label sold-out";stock.textContent="Agotado";info.appendChild(stock);}
-    else if(p.stock===1){var stockLimited=document.createElement("div");stockLimited.className="stock-label";stockLimited.textContent="Stock muy limitado";info.appendChild(stockLimited);}
+    else if(p.stock===1){var stockLimited=document.createElement("div");stockLimited.className="stock-label limited";stockLimited.textContent="Stock muy limitado";info.appendChild(stockLimited);}
+    else{var stockAvailable=document.createElement("div");stockAvailable.className="stock-label available";stockAvailable.textContent="Disponible";info.appendChild(stockAvailable);}
     var pr=document.createElement("div");pr.className="price";pr.textContent="$"+p.price.toLocaleString("es-AR");
     var b=document.createElement("button");b.className="btn";b.type="button";
     if(p.inStock===false){b.textContent="Sin stock";b.disabled=true;b.setAttribute("aria-label",p.name+" agotado");}
